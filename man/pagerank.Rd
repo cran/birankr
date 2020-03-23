@@ -33,7 +33,7 @@ pagerank(
 
 \item{weight_name}{Name of edge weights. Parameter ignored if data is an adjacency matrix. Defaults to edge weights = 1.}
 
-\item{rm_weights}{Removes edge weights from graph object before estimating PageRank. Parameter ignored if data is an edge list. Defaults to FALSE.}
+\item{rm_weights}{Removes edge weights from graph object before estimating PageRank. Defaults to FALSE.}
 
 \item{duplicates}{How to treat duplicate edges if any in data. Parameter ignored if data is an adjacency matrix. If option "add" is selected, duplicated edges and corresponding edge weights are collapsed via addition. Otherwise, duplicated edges are removed and only the first instance of a duplicated edge is used. Defaults to "add".}
 
@@ -48,7 +48,7 @@ pagerank(
 \item{verbose}{Show the progress of this function. Defaults to FALSE.}
 }
 \value{
-A dataframe containing each node name and node rank. If return_data_frame changed to FALSE, returns a vector of node ranks.
+A dataframe containing each node name and node rank. If return_data_frame changed to FALSE or input data is classed as an adjacency matrix, returns a vector of node ranks. Does not return node ranks for isolates.
 }
 \description{
 Estimate PageRank (centrality scores) of nodes from an edge list or adjacency matrix. If data is a bipartite graph, estimates PageRank based on a one-mode projection of the input. If the data is an edge list, returns ranks ordered by the unique values in the supplied edge list (first by unique senders, then by unique receivers).
@@ -59,24 +59,24 @@ The default optional arguments are likely well-suited for most users. However, i
 \examples{
 #Prepare one-mode data
     df_one_mode <- data.frame(
-      sender = sample(x = 1:10000, size = 10000, replace = TRUE), 
+      sender = sample(x = 1:10000, size = 10000, replace = TRUE),
       receiver = sample(x = 1:10000, size = 10000, replace = TRUE)
     )
-    
+
 #Add self-loops for all nodes
     unique_ids <- unique(c(df_one_mode$sender, df_one_mode$receiver))
-    df_one_mode <- rbind(df_one_mode, data.frame(sender = unique_ids, 
+    df_one_mode <- rbind(df_one_mode, data.frame(sender = unique_ids,
     receiver = unique_ids))
-    
+
 #Estimate PageRank in one-mode data
-    PageRank <- pagerank(data = df_one_mode, is_bipartite = FALSE) 
-    
+    PageRank <- pagerank(data = df_one_mode, is_bipartite = FALSE)
+
 #Estimate PageRank in two-mode data
     df_two_mode <- data.frame(
-      patient_id = sample(x = 1:10000, size = 10000, replace = TRUE), 
+      patient_id = sample(x = 1:10000, size = 10000, replace = TRUE),
       provider_id = sample(x = 1:5000, size = 10000, replace = TRUE)
     )
-    PageRank <- pagerank(data = df_two_mode) 
+    PageRank <- pagerank(data = df_two_mode)
 }
 \references{
 Lawrence Page, Sergey Brin, Rajeev Motwani, and Terry Winograd. "The pagerank citation ranking: Bringing order to the web". Technical report, Stanford InfoLab, 1999
